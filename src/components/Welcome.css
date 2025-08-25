@@ -1,0 +1,120 @@
+/* Welcome.css: Styles for the Welcome component to match the mancave aesthetic */
+.welcome-container {
+  /* Full viewport height and width to fill the screen */
+  min-height: 100vh;
+  min-width: 100vw;
+  /* Center content vertically and horizontally */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Charcoal background for the luxurious feel */
+  background-color: #2F2F2F;
+  /* High-res cellar image as background */
+  background-image: url('../images/cellar-bg.jpg'); /* Placeholder; replace with actual image path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* Optional overlay for text readability */
+  position: relative;
+}
+
+.welcome-container::before {
+  /* Dark overlay to enhance text contrast */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 50% black overlay */
+  z-index: 1;
+}
+
+.welcome-logo, .welcome-tagline, .welcome-buttons {
+  /* Ensure content is above the overlay */
+  position: relative;
+  z-index: 2;
+}
+
+/* Styling for the logo */
+.welcome-logo {
+  /* Playfair Display font for headers */
+  font-family: 'Playfair Display', serif;
+  /* Gold color for the logo */
+  color: #FFD700;
+  /* Large font size for prominence */
+  font-size: 3rem;
+  /* Margin to separate from tagline */
+  margin-bottom: 1rem;
+  /* Text shadow for a subtle glow effect */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Styling for the tagline */
+.welcome-tagline {
+  /* Inter font for body text */
+  font-family: 'Inter', sans-serif;
+  /* Ivory color for the tagline */
+  color: #FDF6E3;
+  /* Moderate font size */
+  font-size: 1.5rem;
+  /* Margin to separate from buttons */
+  margin-bottom: 2rem;
+}
+
+/* Styling for the button container */
+.welcome-buttons {
+  /* Stack buttons vertically on mobile */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Space between buttons */
+}
+
+/* Base styling for buttons */
+.welcome-button {
+  /* Inter font for button text */
+  font-family: 'Inter', sans-serif;
+  /* Padding for clickable area */
+  padding: 0.75rem 1.5rem;
+  /* Border radius for smooth edges */
+  border-radius: 5px;
+  /* Cursor pointer for interactivity */
+  cursor: pointer;
+  /* Transition for smooth hover effect */
+  transition: background-color 0.3s ease;
+}
+
+/* Sign Up button (primary) */
+.signup {
+  /* Gold background */
+  background-color: #FFD700;
+  /* Charcoal text for contrast */
+  color: #2F2F2F;
+  /* Border for a polished look */
+  border: 2px solid #FFD700;
+}
+
+/* Sign Up button hover effect */
+.signup:hover {
+  /* Darker gold on hover */
+  background-color: #DAA520;
+}
+
+/* Log In button (secondary) */
+.login {
+  /* Amber outline */
+  border: 2px solid #DAA520;
+  /* Ivory text */
+  color: #FDF6E3;
+  /* Transparent background */
+  background-color: transparent;
+}
+
+/* Log In button hover effect */
+.login:hover {
+  /* Amber background on hover */
+  background-color: #DAA520;
+  /* Ivory text remains */
+  color: #FDF6E3;
+}

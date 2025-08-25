@@ -1,38 +1,36 @@
+/* Root styles for the App component, setting up the mancave aesthetic */
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+  /* Charcoal background for a luxurious, dimly lit feel */
+  background-color: #2F2F2F;
+  /* Full viewport height to ensure the app fills the screen */
   min-height: 100vh;
+  /* Center content vertically and horizontally */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  /* Primary font for body text, per requirements */
+  font-family: 'Inter', sans-serif;
+  /* Ivory text color for readability */
+  color: #FDF6E3;
 }
 
-.App-link {
-  color: #61dafb;
+/* Styling for the main heading */
+.App h1 {
+  /* Playfair Display for headers, per requirements */
+  font-family: 'Playfair Display', serif;
+  /* Gold color for the app title */
+  color: #FFD700;
+  /* Larger font size for prominence */
+  font-size: 2.5rem;
+  /* Slight margin to separate from paragraph */
+  margin-bottom: 1rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Styling for the welcome paragraph */
+.App p {
+  /* Smaller font size for the tagline */
+  font-size: 1.2rem;
+  /* Amber color for the tagline to align with aesthetic */
+  color: #DAA520;
 }
