@@ -118,3 +118,36 @@
   /* Ivory text remains */
   color: #FDF6E3;
 }
+
+/* Styles for the coming soon overlay */
+.coming-soon-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #2F2F2F; /* Charcoal background for consistency */
+  background-image: url('../images/coming-soon.jpg'); /* Coming soon image as background */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it's on top */
+}
+
+/* Override for back button in overlay */
+.coming-soon-overlay button {
+  background-color: #FFD700; /* Gold background for solid appearance */
+  color: #2F2F2F; /* Charcoal text for contrast */
+  border: 2px solid #FFD700; /* Gold border for consistency */
+  font-size: 1.5rem; /* 50% bigger font size */
+  font-weight: bold; /* Bold text */
+  padding: 1.125rem 2.25rem; /* Increase padding by 50% for larger button size */
+  margin-top: 20px; /* Slight spacing for usability */
+}
+
+.coming-soon-overlay button:hover {
+  background-color: #DAA520; /* Darker gold on hover */
+}
