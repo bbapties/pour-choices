@@ -1,0 +1,22 @@
+/* Import Playfair Display for headers */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+
+/* Import Inter for body text */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+/* Reset default margins and padding for consistent rendering */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Set base font and background for the entire app */
+body {
+  /* Default font to Inter, fallback to sans-serif */
+  font-family: 'Inter', sans-serif;
+  /* Charcoal background as default, per mancave aesthetic */
+  background-color: #2F2F2F;
+  /* Ensure the app takes full height */
+  min-height: 100vh;
+}

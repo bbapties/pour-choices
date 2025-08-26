@@ -1,0 +1,36 @@
+/* Root styles for the App component, setting up the mancave aesthetic */
+.App {
+  /* Charcoal background for a luxurious, dimly lit feel */
+  background-color: #2F2F2F;
+  /* Full viewport height to ensure the app fills the screen */
+  min-height: 100vh;
+  /* Center content vertically and horizontally */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Primary font for body text, per requirements */
+  font-family: 'Inter', sans-serif;
+  /* Ivory text color for readability */
+  color: #FDF6E3;
+}
+
+/* Styling for the main heading */
+.App h1 {
+  /* Playfair Display for headers, per requirements */
+  font-family: 'Playfair Display', serif;
+  /* Gold color for the app title */
+  color: #FFD700;
+  /* Larger font size for prominence */
+  font-size: 2.5rem;
+  /* Slight margin to separate from paragraph */
+  margin-bottom: 1rem;
+}
+
+/* Styling for the welcome paragraph */
+.App p {
+  /* Smaller font size for the tagline */
+  font-size: 1.2rem;
+  /* Amber color for the tagline to align with aesthetic */
+  color: #DAA520;
+}
