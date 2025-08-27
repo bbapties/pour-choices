@@ -1,0 +1,122 @@
+/* SignUpModal.css: Styles for the sign-up modal with mancave aesthetic and 3D effects */
+
+/* Modal overlay (bottom half) */
+.sign-up-modal-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 35vh; /* Bottom 35% of screen */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay for top visibility */
+  animation: expandModal 0.3s ease-out; /* Expand animation */
+  z-index: 1000;
+}
+
+/* Modal content (wood block with 3D) */
+.sign-up-modal-content {
+  width: calc(100% - 10px); /* 5px from left/right edges */
+  height: 100%; /* Fill the overlay height */
+  padding: 20px;
+  background-color: #8B4513; /* Mahogany wood color (adjust with texture image if needed) */
+  background-image: url('../images/mahogany-texture.jpg'); /* Add a mahogany texture image in src/images */
+  background-size: cover;
+  border-radius: 10px 10px 0 0; /* Rounded top corners */
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.5); /* 3D lift from bottom */
+  color: #FDF6E3; /* Ivory text */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: glow 0.3s ease-in; /* Subtle glow on open */
+}
+
+/* Header with progress */
+.sign-up-modal-content h2 {
+  font-family: 'Playfair Display', serif;
+  color: #000000; /* Black for stamped effect */
+  font-size: 1.26rem; /* 30% smaller than original 1.8rem */
+  margin-bottom: 10px;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3); /* Engraved stamped effect (inverse shadow) */
+}
+
+/* Progress bar (increase visibility on PC) */
+.progress-bar {
+  width: 100%;
+  height: 12px; /* Increased height for better visibility on PC */
+  background-color: transparent; /* No fill to begin with, no border */
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5); /* 3D engraved effect */
+  margin-bottom: 20px;
+  visibility: visible; /* Ensure visibility */
+  min-height: 12px; /* Force min height to prevent collapse */
+  overflow: visible; /* Ensure label shows if positioned outside */
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #DAA520; /* Amber fill */
+  transition: width 0.3s ease; /* Smooth progression */
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.2); /* 3D lift */
+}
+
+/* Progress label (light pine wood color) */
+.progress-label {
+  position: absolute;
+  top: -15px;
+  color: #D2B48C; /* Light brown pine wood color */
+  font-size: 0.8rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Carved out effect */
+}
+
+/* Form inputs with engraved 3D */
+.modal-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #DAA520; /* Amber underline */
+  color: #FFD700; /* Gold text for input value */
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem; /* Slightly larger font size */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3); /* Engraved effect */
+  transition: box-shadow 0.3s;
+}
+
+/* Placeholder text (lighter grey, smaller size) */
+.modal-input::placeholder {
+  color: #CCCCCC; /* Lighter grey (50% between dark grey and white) */
+  font-style: italic; /* Italic placeholders */
+  font-size: 1rem; /* Original smaller size for placeholders */
+}
+
+/* Input value style (non-italic, larger) */
+.modal-input {
+  font-style: normal; /* Remove italics for input value */
+  font-size: 1.2rem; /* Larger font size for typed text */
+}
+
+.modal-input:focus {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 3px rgba(218, 165, 32, 0.5); /* More subtle gold glow on focus (reduced from 5px to 3px, 0.5 opacity) */
+}
+
+/* Buttons with 3D lift */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end; /* Bottom-right aligned */
+  gap: 10px;
+  width: 100%;
+}
+
+/* Animation keyframes */
+@keyframes expandModal {
+  from { height: 0; }
+  to { height: 50vh; }
+}
+
+@keyframes glow {
+  from { opacity: 0; box-shadow: 0 0 0 rgba(218, 165, 32, 0.5); }
+  to { opacity: 1; box-shadow: 0 -4px 8px rgba(218, 165, 32, 0.5); }
+}
