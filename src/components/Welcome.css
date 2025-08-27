@@ -11,7 +11,7 @@
   /* Charcoal background for the luxurious feel */
   background-color: #2F2F2F;
   /* High-res cellar image as background */
-  background-image: url('../images/cellar-bg.jpg'); /* Placeholder; replace with actual image path */
+  background-image: url('../images/cellar-bg.png'); /* Placeholder; replace with actual image path */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -150,4 +150,23 @@
 
 .coming-soon-overlay button:hover {
   background-color: #DAA520; /* Darker gold on hover */
+}
+
+/* Adjust button container position */
+.welcome-buttons {
+  position: absolute;
+  bottom: 60px; /* Just off the bottom, adjust as needed */
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem; /* Smaller gap for closer buttons */
+  max-width: 150px; /* Set a max width based on "Add to Home Screen" text, adjust as needed */
+  margin: 0 auto; /* Center the container horizontally */
+}
+
+/* Make all buttons the same width */
+.welcome-buttons button {
+  width: 100%; /* Fill the container's max-width */
 }
