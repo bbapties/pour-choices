@@ -2,40 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import './SignUpModal.css'; // Import modal-specific styles
 
-function SignUpModal({ onClose }) {
+function SignUpModal({ onClose, onNext }) {
   const [username, setUsername] = useState(''); // State for username
   const [email, setEmail] = useState(''); // State for email
   const [progress, setProgress] = useState(0); // State for progress bar (0-100%)
-
-  // Mock uniqueness check (replace with backend call later)
-  const isUnique = (field, value) => {
-    // Mock DB check
-    const existingUsers = ['existinguser', 'testuser']; // Mock usernames
-    const existingEmails = ['existing@email.com', 'test@email.com']; // Mock emails
-    if (field === 'username') return !existingUsers.includes(value.toLowerCase());
-    if (field === 'email') return !existingEmails.includes(value.toLowerCase());
-    return true;
-  };
-
-  // Handle Next button click with validation
-  const handleNext = () => {
-    if (!username || !email) {
-      alert('Both fields are required!');
-      return;
-    }
-    if (!isUnique('username', username)) {
-      alert('Username already in use—try logging in');
-      onClose();
-      return;
-    }
-    if (!isUnique('email', email)) {
-      alert('Email already in use—try logging in');
-      onClose();
-      return;
-    }
-    // Proceed to Step 2 (mock for now)
-    alert('Proceed to Step 2!');
-  };
 
   // Update progress on field blur (after stepping out)
   const handleUsernameBlur = () => {
@@ -55,6 +25,44 @@ function SignUpModal({ onClose }) {
     const audio = new Audio(`${process.env.PUBLIC_URL}/cork-pop.mp3`);
     audio.play();
   }, []); // Plays once on mount
+
+  // Check uniqueness with backend API
+  const checkUniqueness = async (field, value) => {
+    try {
+      const response = await fetch('http://localhost:5001/check-uniqueness', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ field, value: value.toLowerCase() }),
+      });
+      const data = await response.json();
+      return data.isUnique;
+    } catch (error) {
+      console.error('Uniqueness check failed:', error);
+      return false; // Assume not unique on error
+    }
+  };
+
+  // Handle Next button click with validation
+  const handleNext = async () => {
+    if (!username || !email) {
+      alert('Both fields are required!');
+      return;
+    }
+    const isUsernameUnique = await checkUniqueness('username', username);
+    const isEmailUnique = await checkUniqueness('email', email);
+    if (!isUsernameUnique) {
+      alert('Username already in use—try logging in');
+      onClose();
+      return;
+    }
+    if (!isEmailUnique) {
+      alert('Email already in use—try logging in');
+      onClose();
+      return;
+    }
+    // Proceed to coming soon screen
+    onNext();
+  };
 
   // Check if both fields are filled for showing Next button
   const bothFilled = username.trim() !== '' && email.trim() !== '';
