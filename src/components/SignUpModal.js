@@ -14,6 +14,8 @@ function SignUpModal({ onClose, onNext }) {
     }
   };
 
+  const [isLoading, setIsLoading] = useState(false); // State for loading
+  
   const handleEmailBlur = () => {
     if (email.trim() !== '') {
       setProgress(50); // 25% to 50% if filled
@@ -71,34 +73,41 @@ function SignUpModal({ onClose, onNext }) {
     }
   };
 
+
   // Handle Next button click with validation and creation
-  const handleNext = async () => {
-    if (!username || !email) {
-      alert('Both fields are required!');
-      return;
-    }
-    await trackEvent('click', '/signup', 'next-button'); // Track Next button click
-    const isUsernameUnique = await checkUniqueness('username', username);
-    const isEmailUnique = await checkUniqueness('email', email);
-    if (!isUsernameUnique) {
-      alert('Username already in use—try logging in');
-      return;
-    }
-    if (!isEmailUnique) {
-      alert('Email already in use—try logging in');
-      return;
-    }
-    const userCreated = await createUser(username, email); // Await creation
-    if (userCreated) {
-      onNext(); // Proceed to coming soon screen only if creation succeeds
-    }
-  };
+const handleNext = async () => {
+  setIsLoading(true); // Start loading
+  if (!username || !email) {
+    alert('Both fields are required!');
+    setIsLoading(false); // Stop loading on error
+    return;
+  }
+  await trackEvent('click', '/signup', 'next-button'); // Track Next button click
+  const isUsernameUnique = await checkUniqueness('username', username);
+  const isEmailUnique = await checkUniqueness('email', email);
+  if (!isUsernameUnique) {
+    alert('Username already in use—try logging in');
+    setIsLoading(false); // Stop loading on error
+    return;
+  }
+  if (!isEmailUnique) {
+    alert('Email already in use—try logging in');
+    setIsLoading(false); // Stop loading on error
+    return;
+  }
+  const userCreated = await createUser(username, email); // Await creation
+  if (userCreated) {
+    onNext(); // Proceed to coming soon screen only if creation succeeds
+  }
+  setIsLoading(false); // Stop loading regardless of outcome
+};
 
   // Check if both fields are filled for showing Next button
   const bothFilled = username.trim() !== '' && email.trim() !== '';
 
   return (
     <div className="sign-up-modal-overlay">
+          {isLoading && ( <div className="loading-overlay"> <div className="spinner" />  </div> )} 
       <div className="sign-up-modal-content">
         {/* Progress bar */}
         <div className="progress-bar">

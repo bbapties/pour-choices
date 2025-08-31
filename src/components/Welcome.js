@@ -1,11 +1,17 @@
 // Welcome.js: The landing page component for new and returning users
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Add useEffect to import
 import './Welcome.css'; // Import associated styles
 import SignUpModal from './SignUpModal'; // Import the sign-up modal component
 
 function Welcome() {
   const [showSignUpModal, setShowSignUpModal] = useState(false); // State to toggle the sign-up modal
   const [showComingSoon, setShowComingSoon] = useState(false); // State to toggle the coming soon overlay
+
+  // Ping the backend on component mount to wake it up
+  useEffect(() => {
+    fetch('https://pour-choices-api.onrender.com/test-db')
+      .catch(error => console.error('Ping failed:', error)); // Silent fail, log to console
+  }, []); // Empty dependency array for one-time execution
 
   const handleSignUpClick = () => {
     setShowSignUpModal(true); // Show the sign-up modal on button click
