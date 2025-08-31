@@ -25,7 +25,6 @@ app.use((req, res, next) => {
   logger.info({
     method: req.method,
     url: req.url,
-    ip: req.ip,
     timestamp: new Date().toISOString()
   });
   next();
@@ -85,7 +84,7 @@ app.post('/track-event', async (req, res) => {
       INSERT INTO visitor_events (event_type, page, element, ip_address, timestamp)
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *`;
-    const result = await client.query(query, [eventType, page, element, req.ip, new Date()]);
+    const result = await client.query(query, [eventType, page, element, null, new Date()]);
     logger.info(`Tracked event: ${eventType} on ${page} at ${element}`);
     client.release();
     res.status(201).json({ message: 'Event tracked', event: result.rows[0] });
