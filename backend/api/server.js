@@ -31,13 +31,24 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json());
-app.use(cors({
-  origin: 'https://pourchoicesapp.com',
+// Dynamic CORS configuration
+const corsOptions = {
+  origin: (origin, callback) => {
+    const allowedOrigins = ['https://pourchoicesapp.com', 'http://localhost:5000'];
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200
-}));
+};
+
+app.options('*', cors(corsOptions)); // Handle preflight requests
+app.use(cors(corsOptions)); // Apply CORS to all routes
+app.use(express.json());
 
 // PostgreSQL connection pool
 const pool = new Pool({
@@ -64,7 +75,7 @@ app.get('/test-db', async (req, res) => {
 
 // Track clicks and visits
 app.post('/track-event', async (req, res) => {
-  const { eventType, page, element } = req.body; // e.g., { eventType: 'click', page: '/signup', element: 'next-button' }
+  const { eventType, page, element } = req.body;
   if (!eventType || !page) {
     return res.status(400).json({ error: 'eventType and page are required' });
   }
@@ -87,16 +98,19 @@ app.post('/track-event', async (req, res) => {
 // Check uniqueness of username or email
 app.post('/check-uniqueness', async (req, res) => {
   const { field, value } = req.body;
+  logger.info(`Checking uniqueness for ${field}: ${value}`);
   try {
     const client = await pool.connect();
+    logger.debug(`Executing query: SELECT COUNT(*) FROM public.users WHERE ${field} = '${value.toLowerCase()}'`);
     const query = 'SELECT COUNT(*) FROM public.users WHERE $1 = $2';
     const result = await client.query(query, [field, value.toLowerCase()]);
+    logger.debug(`Query result: ${JSON.stringify(result.rows)}`);
     const isUnique = result.rows[0].count === '0';
-    logger.info(`Uniqueness check for ${field}: ${value} -> ${isUnique}`);
+    logger.info(`Uniqueness result for ${field}: ${value} -> ${isUnique}`);
     client.release();
     res.json({ isUnique });
   } catch (err) {
-    logger.error(`Uniqueness check error: ${err.message}`);
+    logger.error(`Uniqueness check error: ${err.message}`, { stack: err.stack });
     res.status(500).json({ error: `Error checking uniqueness: ${err.message}` });
   }
 });
