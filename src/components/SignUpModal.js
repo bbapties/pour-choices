@@ -26,6 +26,19 @@ function SignUpModal({ onClose, onNext }) {
     audio.play();
   }, []); // Plays once on mount
 
+  // Track click event
+  const trackEvent = async (eventType, page, element) => {
+    try {
+      await fetch('https://pour-choices-api.onrender.com/track-event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventType, page, element }),
+      });
+    } catch (error) {
+      console.error('Event tracking failed:', error);
+    }
+  };
+
   // Check uniqueness with backend API
   const checkUniqueness = async (field, value) => {
     try {
@@ -64,6 +77,7 @@ function SignUpModal({ onClose, onNext }) {
       alert('Both fields are required!');
       return;
     }
+    await trackEvent('click', '/signup', 'next-button'); // Track Next button click
     const isUsernameUnique = await checkUniqueness('username', username);
     const isEmailUnique = await checkUniqueness('email', email);
     if (!isUsernameUnique) {
@@ -116,7 +130,7 @@ function SignUpModal({ onClose, onNext }) {
           {bothFilled && (
             <button className="welcome-button signup" onClick={handleNext}>Next</button>
           )}
-          <button className="welcome-button login" onClose={onClose}>Cancel</button>
+          <button className="welcome-button login" onClick={onClose}>Cancel</button>
         </div>
       </div>
     </div>
