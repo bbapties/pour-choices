@@ -31,7 +31,7 @@ function SignUpModal({ onClose, onNext }) {
   const checkUniqueness = async (field, value) => {
     try {
       console.log(`Starting uniqueness check for ${field}: ${value}`); // Debug start
-      const response = await fetch('https://fresh-taxis-wish.loca.lt/check-uniqueness', {
+      const response = await fetch('https://pour-choices-api.onrender.com/check-uniqueness', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ field, value: value.toLowerCase() }),
@@ -49,7 +49,7 @@ function SignUpModal({ onClose, onNext }) {
   const createUser = async (username, email) => {
     console.log(`Initiating user creation for ${username}, ${email}`); // Debug start
     try {
-      const response = await fetch('https://fresh-taxis-wish.loca.lt/create-user', {
+      const response = await fetch('https://pour-choices-api.onrender.com/create-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: username.toLowerCase(), email: email.toLowerCase() }),
