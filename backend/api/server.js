@@ -5,6 +5,7 @@ const cors = require('cors');
 const winston = require('winston');
 const app = express();
 const port = process.env.PORT || 5001;
+const multer = require('multer');
 
 // Configure Winston logger
 const logger = winston.createLogger({
@@ -58,6 +59,10 @@ const pool = new Pool({
   port: 5432,
   ssl: { rejectUnauthorized: false }
 });
+
+// Multer configuration for file uploads
+const storage = multer.memoryStorage(); // Store file in memory for Supabase upload
+const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
 
 // Test route to check DB connection
 app.get('/test-db', async (req, res) => {
@@ -133,6 +138,45 @@ app.post('/create-user', async (req, res) => {
     }
   }
 });
+
+// Upload profile picture
+app.post('/upload-profile', upload.single('profileImage'), async (req, res) => {
+  const { userId } = req.body; // Expect userId from frontend to associate with user
+  if (!req.file || !userId) {
+    return res.status(400).json({ error: 'Profile image and userId are required' });
+  }
+  try {
+    const client = await pool.connect();
+    const bucketName = 'profile-pics'; // Match your Supabase bucket name
+    const fileName = `${userId}-${Date.now()}-${req.file.originalname}`; // Unique filename
+    const { data, error } = await client.storage
+      .from(bucketName)
+      .upload(fileName, req.file.buffer, {
+        contentType: req.file.mimetype,
+      });
+    if (error) throw error;
+    const imageUrl = `${client.storage.from(bucketName).getPublicUrl(fileName).publicURL}`;
+    const query = 'UPDATE public.users SET profile_image_url = $1 WHERE id = $2 RETURNING *';
+    const result = await client.query(query, [imageUrl, userId]);
+    logger.info(`Profile image uploaded for user ${userId}: ${imageUrl}`);
+    client.release();
+    res.status(201).json({ message: 'Profile image uploaded', imageUrl, user: result.rows[0] });
+  } catch (err) {
+    logger.error(`Profile upload error: ${err.message}`);
+    res.status(500).json({ error: `Error uploading profile image: ${err.message}` });
+  }
+});
+
+(async () => {
+  try {
+    const client = await pool.connect();
+    await client.query('ALTER TABLE public.users ADD COLUMN IF NOT EXISTS profile_image_url TEXT');
+    logger.info('Added profile_image_url column successfully');
+    client.release();
+  } catch (err) {
+    logger.error(`Failed to add column: ${err.message}`);
+  }
+})();
 
 app.listen(port, () => {
   logger.info(`Backend server running on port ${port}`);
