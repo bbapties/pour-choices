@@ -167,17 +167,6 @@ app.post('/upload-profile', upload.single('profileImage'), async (req, res) => {
   }
 });
 
-(async () => {
-  try {
-    const client = await pool.connect();
-    await client.query('ALTER TABLE public.users ADD COLUMN IF NOT EXISTS profile_image_url TEXT');
-    logger.info('Added profile_image_url column successfully');
-    client.release();
-  } catch (err) {
-    logger.error(`Failed to add column: ${err.message}`);
-  }
-})();
-
 app.listen(port, () => {
   logger.info(`Backend server running on port ${port}`);
 });
