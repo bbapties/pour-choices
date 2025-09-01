@@ -36,7 +36,7 @@ const corsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = ['https://pourchoicesapp.com', 'http://localhost:5000'];
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
+      callback(null, origin || '*'); // Return the origin or * if none, allowing GET
     } else {
       callback(new Error('Not allowed by CORS'));
     }
@@ -68,7 +68,7 @@ const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } 
 app.get('/test-db', async (req, res) => {
   try {
     const client = await pool.connect();
-    logger.info('Database connection test successful');
+    logger.info('Received test-db ping from origin: ' + (req.get('origin') || 'unknown')); // Log origin
     res.send('Database connected successfully!');
     client.release();
   } catch (err) {
