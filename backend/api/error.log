@@ -1,1 +1,2 @@
 {"level":"error","message":"Failed to add column: canceling statement due to statement timeout","timestamp":"2025-09-01T00:12:07.838Z"}
+{"level":"error","message":"Profile upload error: Cannot read properties of undefined (reading 'from')","timestamp":"2025-09-01T02:27:30.667Z"}

@@ -6,6 +6,7 @@ const winston = require('winston');
 const app = express();
 const port = process.env.PORT || 5001;
 const multer = require('multer');
+const { createClient } = require('@supabase/supabase-js');
 
 // Configure Winston logger
 const logger = winston.createLogger({
@@ -59,6 +60,11 @@ const pool = new Pool({
   port: 5432,
   ssl: { rejectUnauthorized: false }
 });
+
+// Supabase client setup
+const supabaseUrl = 'https://lrvraigdihzkgphjdezk.supabase.co'; // Replace with your Supabase URL
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxydnJhaWdkaWh6a2dwaGpkZXprIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjU4ODcxNywiZXhwIjoyMDcyMTY0NzE3fQ.luzTT-97LBfRBXed_RmNfJO1qN_ZUmq549ltQE30JZ8'; // Replace with your service role key (from dashboard > Settings > API)
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Multer configuration for file uploads
 const storage = multer.memoryStorage(); // Store file in memory for Supabase upload
@@ -141,21 +147,21 @@ app.post('/create-user', async (req, res) => {
 
 // Upload profile picture
 app.post('/upload-profile', upload.single('profileImage'), async (req, res) => {
-  const { userId } = req.body; // Expect userId from frontend to associate with user
+  const { userId } = req.body;
   if (!req.file || !userId) {
     return res.status(400).json({ error: 'Profile image and userId are required' });
   }
   try {
-    const client = await pool.connect();
-    const bucketName = 'profile-pics'; // Match your Supabase bucket name
-    const fileName = `${userId}-${Date.now()}-${req.file.originalname}`; // Unique filename
-    const { data, error } = await client.storage
-      .from(bucketName)
+    const fileName = `${userId}-${Date.now()}-${req.file.originalname}`;
+    const { data, error } = await supabase.storage
+      .from('profile-pics') // Match your bucket name
       .upload(fileName, req.file.buffer, {
         contentType: req.file.mimetype,
+        upsert: false,
       });
     if (error) throw error;
-    const imageUrl = `${client.storage.from(bucketName).getPublicUrl(fileName).publicURL}`;
+    const imageUrl = `${supabase.storage.from('profile-pics').getPublicUrl(fileName).data.publicUrl}`;
+    const client = await pool.connect();
     const query = 'UPDATE public.users SET profile_image_url = $1 WHERE id = $2 RETURNING *';
     const result = await client.query(query, [imageUrl, userId]);
     logger.info(`Profile image uploaded for user ${userId}: ${imageUrl}`);
@@ -167,6 +173,7 @@ app.post('/upload-profile', upload.single('profileImage'), async (req, res) => {
   }
 });
 
+// Start the server
 app.listen(port, () => {
   logger.info(`Backend server running on port ${port}`);
 });
