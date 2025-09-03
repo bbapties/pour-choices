@@ -1,116 +1,249 @@
 /* SignUpModal.css: Styles for the sign-up modal with mancave aesthetic and 3D effects */
 
-/* Modal overlay (bottom half) */
+/* Modal overlay with step-based height */
 .sign-up-modal-overlay {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100vw;
-  height: 35vh; /* Bottom 35% of screen */
+  height: 30vh; /* Default 30% for Step 1 */
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay for top visibility */
-  animation: expandModal 0.3s ease-out; /* Expand animation */
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: expandModal 0.5s ease-out; /* Smooth slide-up */
   z-index: 1000;
 }
 
-/* Modal content (wood block with 3D) */
+.sign-up-modal-overlay.step-2,
+.sign-up-modal-overlay.step-3 {
+  height: 50vh; /* Expand to 50% for Steps 2 and 3 */
+}
+
 .sign-up-modal-content {
-  width: calc(100% - 10px); /* 5px from left/right edges */
-  height: 100%; /* Fill the overlay height */
+  width: calc(100% - 10px);
+  height: 100%;
   padding: 20px;
-  background-color: #8B4513; /* Mahogany wood color (adjust with texture image if needed) */
-  background-image: url('../images/mahogany-texture.jpg'); /* Add a mahogany texture image in src/images */
+  background-color: #8B4513;
+  background-image: url('../images/mahogany-texture.jpg');
   background-size: cover;
-  border-radius: 10px 10px 0 0; /* Rounded top corners */
-  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.5); /* 3D lift from bottom */
-  color: #FDF6E3; /* Ivory text */
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.5);
+  color: #FDF6E3;
   display: flex;
   flex-direction: column;
   align-items: center;
-  animation: glow 0.3s ease-in; /* Subtle glow on open */
+  animation: glow 0.3s ease-in;
 }
 
-/* Header with progress */
-.sign-up-modal-content h2 {
-  font-family: 'Playfair Display', serif;
-  color: #000000; /* Black for stamped effect */
-  font-size: 1.26rem; /* 30% smaller than original 1.8rem */
-  margin-bottom: 10px;
-  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3); /* Engraved stamped effect (inverse shadow) */
-}
-
-/* Progress bar (increase visibility on PC) */
 .progress-bar {
   width: 100%;
-  height: 12px; /* Increased height for better visibility on PC */
-  background-color: transparent; /* No fill to begin with, no border */
+  height: 12px;
+  background-color: transparent;
   position: relative;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5); /* 3D engraved effect */
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
   margin-bottom: 20px;
-  visibility: visible; /* Ensure visibility */
-  min-height: 12px; /* Force min height to prevent collapse */
-  overflow: visible; /* Ensure label shows if positioned outside */
+  visibility: visible;
+  min-height: 12px;
+  overflow: visible;
 }
 
 .progress-fill {
   height: 100%;
-  background-color: #DAA520; /* Amber fill */
-  transition: width 0.3s ease; /* Smooth progression */
-  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.2); /* 3D lift */
+  background-color: #DAA520;
+  transition: width 0.3s ease;
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
-/* Progress label (light pine wood color) */
 .progress-label {
   position: absolute;
   top: -15px;
-  color: #D2B48C; /* Light brown pine wood color */
+  color: #D2B48C;
   font-size: 0.8rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Carved out effect */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Form inputs with engraved 3D */
 .modal-input {
   width: 100%;
   padding: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   background-color: transparent;
   border: none;
-  border-bottom: 2px solid #DAA520; /* Amber underline */
-  color: #FFD700; /* Gold text for input value */
+  border-bottom: 2px solid #DAA520;
+  color: #FFD700;
   font-family: 'Inter', sans-serif;
-  font-size: 1.2rem; /* Slightly larger font size */
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3); /* Engraved effect */
+  font-size: 1.2rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
   transition: box-shadow 0.3s;
 }
 
-/* Placeholder text (lighter grey, smaller size) */
 .modal-input::placeholder {
-  color: #CCCCCC; /* Lighter grey (50% between dark grey and white) */
-  font-style: italic; /* Italic placeholders */
-  font-size: 1rem; /* Original smaller size for placeholders */
-}
-
-/* Input value style (non-italic, larger) */
-.modal-input {
-  font-style: normal; /* Remove italics for input value */
-  font-size: 1.2rem; /* Larger font size for typed text */
+  color: #CCCCCC;
+  font-style: italic;
+  font-size: 1rem;
 }
 
 .modal-input:focus {
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 3px rgba(218, 165, 32, 0.5); /* More subtle gold glow on focus (reduced from 5px to 3px, 0.5 opacity) */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 3px rgba(218, 165, 32, 0.5);
 }
 
-/* Buttons with 3D lift */
+.carousel-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.current-icon {
+  margin-right: 10px;
+  text-align: center;
+}
+
+.current-icon img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #FFFFFF;
+  border: 2px solid #DAA520;
+}
+
+.current-icon span {
+  font-size: 0.7rem;
+  color: #D2B48C;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.icon-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
+}
+
+.carousel-item {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  margin-right: 10px;
+}
+
+.carousel-item .icon-card {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 2px solid #DAA520;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-item img {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.carousel-item span {
+  display: none;
+}
+
+/* Enhanced scrollbar */
+.icon-scroll-container::-webkit-scrollbar {
+  height: 8px;
+  background: rgba(139, 69, 19, 0.3);
+}
+
+.icon-scroll-container::-webkit-scrollbar-thumb {
+  background: #8B4513;
+  border-radius: 4px;
+  height: 8px;
+}
+
+.icon-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #DAA520;
+}
+
+.custom-upload-section {
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.upload-button {
+  background-color: #FFD700;
+  color: #2F2F2F;
+  border: 2px solid #FFD700;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'Inter', sans-serif;
+}
+
+.upload-button:hover {
+  background-color: #DAA520;
+}
+
+.or-divider {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid #DAA520;
+  line-height: 0.1em;
+  margin: 10px 0;
+}
+
+.or-divider span {
+  background: #8B4513;
+  padding: 0 10px;
+  color: #D2B48C;
+}
+
+.custom-form-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.icon-preview {
+  margin-bottom: 20px;
+}
+
+.icon-preview img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.crop-section {
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.crop-section .cropper {
+  border: 2px dashed #DAA520;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.crop-section button {
+  margin-top: 10px;
+}
+
 .modal-buttons {
   display: flex;
-  justify-content: flex-end; /* Bottom-right aligned */
+  justify-content: flex-end;
   gap: 10px;
   width: 100%;
 }
 
-/* Animation keyframes */
 @keyframes expandModal {
   from { height: 0; }
   to { height: 50vh; }
@@ -121,27 +254,73 @@
   to { opacity: 1; box-shadow: 0 -4px 8px rgba(218, 165, 32, 0.5); }
 }
 
-/* Loading overlay and spinner */
 .loading-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent backdrop */
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1001; /* Above modal (z-index: 1000) */
+  z-index: 1001;
 }
 
 .spinner {
-  border: 4px solid #f3f3f3; /* Light grey border */
-  border-top: 4px solid #DAA520; /* Amber to match theme */
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #DAA520;
   border-radius: 50%;
   width: 40px;
   height: 40px;
   animation: spin 1s linear infinite;
+}
+
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002;
+}
+
+.confirm-content {
+  background-color: #8B4513;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color: #FDF6E3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.confirm-content p {
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+}
+
+.confirm-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.confirm-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  background-color: #FFD700;
+  color: #2F2F2F;
+}
+
+.confirm-buttons button:hover {
+  background-color: #DAA520;
 }
 
 @keyframes spin {
