@@ -259,8 +259,8 @@ function SignUpModal({ onClose, onNext: onComplete }) {
 
   const bothFilled = username.trim() !== '' && email.trim() !== ''; // Restored to enable Next button
 
-  return (
-    <div className={`sign-up-modal-overlay ${step === 1 ? 'step-1' : 'step-2 step-3'}`}>
+    return (
+    <div className={`sign-up-modal-overlay ${step === 1 ? 'step-1' : 'step-2'}`}>
       {isLoading && (
         <div className="loading-overlay">
           <div className="spinner" />

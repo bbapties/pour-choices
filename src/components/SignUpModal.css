@@ -1,23 +1,44 @@
 /* SignUpModal.css: Styles for the sign-up modal with mancave aesthetic and 3D effects */
 
-/* Modal overlay with step-based height */
+/* Modal overlay with fixed pixel height */
 .sign-up-modal-overlay {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100vw;
-  height: 30vh; /* Default 30% for Step 1 */
+  height: 200px; /* Fixed height for Step 1 */
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
-  animation: expandModal 0.5s ease-out; /* Smooth slide-up */
+  animation: expandModal 0.5s ease-out; /* Initial slide-up for Step 1 */
   z-index: 1000;
 }
 
-.sign-up-modal-overlay.step-2,
+.sign-up-modal-overlay.step-2 {
+  height: 350px; /* Fixed height for Step 2 */
+  animation: expandToStep2 0.5s ease-out; /* Animate to 350px */
+}
+
 .sign-up-modal-overlay.step-3 {
-  height: 50vh; /* Expand to 50% for Steps 2 and 3 */
+  height: 350px; /* Fixed height for Step 3 */
+}
+
+/* Prevent overshoot by matching initial height to animation end */
+.sign-up-modal-overlay.step-1 {
+  height: 200px;
+}
+
+/* Animation for initial Step 1 slide-up */
+@keyframes expandModal {
+  from { height: 0; }
+  to { height: 200px; } /* Match Step 1 height */
+}
+
+/* Animation for Step 1 to Step 2 expansion */
+@keyframes expandToStep2 {
+  from { height: 200px; } /* Start from Step 1 height */
+  to { height: 350px; } /* End at Step 2 height */
 }
 
 .sign-up-modal-content {
@@ -32,7 +53,9 @@
   color: #FDF6E3;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: flex-start; /* Align content to top, buttons positioned absolutely */
+  min-height: 0; /* Ensure flex works with fixed height */
+  position: relative; /* Positioning context for buttons */
   animation: glow 0.3s ease-in;
 }
 
@@ -242,11 +265,11 @@
   justify-content: flex-end;
   gap: 10px;
   width: 100%;
-}
-
-@keyframes expandModal {
-  from { height: 0; }
-  to { height: 50vh; }
+  position: absolute; /* Pin to bottom */
+  bottom: 3px; /* Force 3px from bottom */
+  left: 0;
+  right: 0;
+  padding: 0 20px; /* Match content padding */
 }
 
 @keyframes glow {

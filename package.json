@@ -47,6 +47,6 @@
   },
   "devDependencies": {
     "http-server": "^14.1.1",
-    "serve": "^14.2.4"
+    "serve": "^14.2.5"
   }
 }
