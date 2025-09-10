@@ -19,20 +19,6 @@ function SignUpModal({ onClose, onNext: onComplete }) {
   const cropperRef = useRef(null);
   const audioRef = useRef(new Audio(`${process.env.PUBLIC_URL}/cork-pop.mp3`));
 
-  // Generate initials and random color for default icon
-  useEffect(() => {
-    if (username && !selectedIcon) {
-      const words = username.split(/\s+/);
-      const initials = words.length === 3 ? words.map(w => w[0]).join('') :
-                       words.length === 2 ? words.map(w => w[0]).join('') :
-                       username.substring(0, 3).toUpperCase();
-      const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-      setSelectedIcon({ bgColor: randomColor, textColor: '#FFFFFF', text: initials });
-    } else if (!username) {
-      setSelectedIcon(null); // Clear if username is empty
-    }
-  }, [username, selectedIcon]); // Include selectedIcon to reset on new selection
-
   // Update progress on field blur
   const handleUsernameBlur = () => {
     if (username.trim() !== '') {
@@ -86,6 +72,37 @@ function SignUpModal({ onClose, onNext: onComplete }) {
           } else if (!isEmailUnique) {
             alert('Email already in use—try logging in');
           } else {
+            // Generate initials and random color for default icon
+            let initials;
+            const upper = username.toUpperCase();
+
+            // Space split
+            const spaceWords = username.split(/\s+/).filter(w => w.length > 0);
+            if (spaceWords.length >= 2) {
+              initials = spaceWords.slice(0, 3).map(w => w[0].toUpperCase()).join('');
+            } else {
+              // Capital split for camelCase
+              const capitalMatches = username.match(/[A-Z]/g);
+              if (capitalMatches && capitalMatches.length >= 2) {
+                initials = capitalMatches.slice(0, 3).join('');
+              } else {
+                // Fallback first 3 uppercase
+                initials = upper.substring(0, 3);
+              }
+            }
+            console.log('Initials for username "' + username + '":', initials);
+
+            const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+            // Contrast check
+            const hex = randomColor.substring(1);
+            const r = parseInt(hex.substring(0, 2), 16) / 255;
+            const g = parseInt(hex.substring(2, 4), 16) / 255;
+            const b = parseInt(hex.substring(4, 6), 16) / 255;
+            const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+            const textColor = luminance > 0.5 ? '#000000' : '#FFFFFF';
+
+            setSelectedIcon({ bgColor: randomColor, textColor, text: initials });
+
             setProgress(50);
             audioRef.current.currentTime = 1.1;
             audioRef.current.play();
@@ -187,13 +204,13 @@ function SignUpModal({ onClose, onNext: onComplete }) {
     }
   };
 
-const handleIconSelect = (icon) => {
-  if (icon.id === 'custom') {
-    setStep(3); // Go to custom step
-  } else {
-    setSelectedIcon(icon.image || icon); // Update for other icons
-  }
-};
+  const handleIconSelect = (icon) => {
+    if (icon.id === 'custom') {
+      setStep(3); // Go to custom step
+    } else {
+      setSelectedIcon(icon.image || icon); // Update for other icons
+    }
+  };
 
   const handlePhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, '').substring(0, 10);
@@ -252,15 +269,15 @@ const handleIconSelect = (icon) => {
     image: file,
   }))];
 
-const customIconConfig = {
-  id: 'custom',
-  image: 'data:image/svg+xml;utf8,<svg width="56" height="56" xmlns="http://www.w3.org/2000/svg"><rect width="56" height="56" fill="%23333333"/><text x="28" y="17" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">MAKE</text><text x="28" y="32" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">YOUR</text><text x="28" y="47" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">OWN</text></svg>',
-  label: 'Custom'
-};
+  const customIconConfig = {
+    id: 'custom',
+    image: 'data:image/svg+xml;utf8,<svg width="56" height="56" xmlns="http://www.w3.org/2000/svg"><rect width="56" height="56" fill="%23333333"/><text x="28" y="17" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">MAKE</text><text x="28" y="32" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">YOUR</text><text x="28" y="47" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">OWN</text></svg>',
+    label: 'Custom'
+  };
 
   const bothFilled = username.trim() !== '' && email.trim() !== ''; // Restored to enable Next button
 
-    return (
+  return (
     <div className={`sign-up-modal-overlay ${step === 1 ? 'step-1' : 'step-2'}`}>
       {isLoading && (
         <div className="loading-overlay">
@@ -278,7 +295,10 @@ const customIconConfig = {
               type="text"
               placeholder="Enter username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                console.log('Username input:', e.target.value);
+                setUsername(e.target.value);
+              }}
               onBlur={handleUsernameBlur}
               className="modal-input"
             />
@@ -297,15 +317,15 @@ const customIconConfig = {
              <div className="icon-selection-area">
               <div className="main-carousel-container">
                 <div className="left-section">
-  <div className="carousel-label-wrapper">
-    <span className="carousel-label"></span> {/* Invisible placeholder */}
-  </div>
-  <div className="current-box">
-    {selectedIcon && (
-      <img src={typeof selectedIcon === 'string' ? selectedIcon : `data:image/svg+xml;utf8,${encodeURIComponent(createIconSvg(selectedIcon))}`} alt="Current" />
-    )}
-  </div>
-  <span className="current-label">Current</span>
+                  <div className="carousel-label-wrapper">
+                    <span className="carousel-label"></span> {/* Invisible placeholder */}
+                  </div>
+                  <div className="current-box">
+                    {selectedIcon && (
+                      <img src={typeof selectedIcon === 'string' ? selectedIcon : `data:image/svg+xml;utf8,${encodeURIComponent(createIconSvg(selectedIcon))}`} alt="Current" />
+                    )}
+                  </div>
+                  <span className="current-label">Current</span>
                 </div>
                 <div className="right-section">
                   <span className="carousel-label">Choose a new Profile Icon below</span> {/* Moved label inside .right-section */}
@@ -327,16 +347,16 @@ const customIconConfig = {
               </div>
             </div>
             <div style={{ paddingLeft: '50px', paddingRight: '50px', width: '100%' }}>
-  <input
-    type="tel"
-    placeholder="Phone (optional) +1 (___) ___-____"
-    value={phone}
-    onChange={handlePhoneChange}
-    onBlur={() => setProgress(phone ? 100 : 75)}
-    className="modal-input"
-  />
-  <small style={{ color: '#CCCCCC', fontSize: '0.8rem', textAlign: 'center', display: 'block' }}>Phone number will be used to send text updates</small>
-</div>
+              <input
+                type="tel"
+                placeholder="Phone (optional) +1 (___) ___-____"
+                value={phone}
+                onChange={handlePhoneChange}
+                onBlur={() => setProgress(phone ? 100 : 75)}
+                className="modal-input"
+              />
+              <small style={{ color: '#CCCCCC', fontSize: '0.8rem', textAlign: 'center', display: 'block' }}>Phone number will be used to send text updates</small>
+            </div>
           </>
         )}
         {step === 3 && (
