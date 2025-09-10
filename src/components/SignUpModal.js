@@ -296,12 +296,15 @@ const customIconConfig = {
              <div className="icon-selection-area">
               <div className="main-carousel-container">
                 <div className="left-section">
-                  <div className="current-box">
-                    {selectedIcon && (
-                      <img src={typeof selectedIcon === 'string' ? selectedIcon : `data:image/svg+xml;utf8,${encodeURIComponent(createIconSvg(selectedIcon))}`} alt="Current" />
-                    )}
-                  </div>
-                  <span className="current-label">Current</span> {/* Moved label inside .left-section */}
+  <div className="carousel-label-wrapper">
+    <span className="carousel-label"></span> {/* Invisible placeholder */}
+  </div>
+  <div className="current-box">
+    {selectedIcon && (
+      <img src={typeof selectedIcon === 'string' ? selectedIcon : `data:image/svg+xml;utf8,${encodeURIComponent(createIconSvg(selectedIcon))}`} alt="Current" />
+    )}
+  </div>
+  <span className="current-label">Current</span>
                 </div>
                 <div className="right-section">
                   <span className="carousel-label">Choose a new Profile Icon below</span> {/* Moved label inside .right-section */}
@@ -322,16 +325,17 @@ const customIconConfig = {
                 </div>
               </div>
             </div>
-            <input
-              type="tel"
-              placeholder="Phone (optional) +1 (___) ___-____"
-              value={phone}
-              onChange={handlePhoneChange}
-              onBlur={() => setProgress(phone ? 100 : 75)}
-              className="modal-input"
-              style={{marginTop: '10px'}} /* Add some top margin for spacing */
-            />
-            <small style={{ color: '#CCCCCC', fontSize: '0.8rem' }}>Phone number will be used to send text updates</small>
+            <div style={{ paddingLeft: '50px', paddingRight: '50px', width: '100%' }}>
+  <input
+    type="tel"
+    placeholder="Phone (optional) +1 (___) ___-____"
+    value={phone}
+    onChange={handlePhoneChange}
+    onBlur={() => setProgress(phone ? 100 : 75)}
+    className="modal-input"
+  />
+  <small style={{ color: '#CCCCCC', fontSize: '0.8rem', textAlign: 'center', display: 'block' }}>Phone number will be used to send text updates</small>
+</div>
           </>
         )}
         {step === 3 && (
