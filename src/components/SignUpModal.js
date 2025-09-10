@@ -11,13 +11,15 @@ function SignUpModal({ onClose, onNext: onComplete }) {
   const [email, setEmail] = useState('');
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [phone, setPhone] = useState('');
-  const [customIcon, setCustomIcon] = useState({ bgColor: '#000000', textColor: '#FFFFFF', text: '' }); // State for custom form
-  const [selectedIcon, setSelectedIcon] = useState(null); // URL or custom config
-  const [showConfirm, setShowConfirm] = useState(false); // Custom confirmation state
+const [phone, setPhone] = useState('');
+const [selectedIcon, setSelectedIcon] = useState(null); // Move this before customIcon
+const [customIcon, setCustomIcon] = useState({ bgColor: '#000000', textColor: '#FFFFFF', text: '' });
+const [showConfirm, setShowConfirm] = useState(false);
   const [cropperSrc, setCropperSrc] = useState(null); // Upload crop image src
   const cropperRef = useRef(null);
   const audioRef = useRef(new Audio(`${process.env.PUBLIC_URL}/cork-pop.mp3`));
+  const [showBgPicker, setShowBgPicker] = useState(false);
+  const [showTextPicker, setShowTextPicker] = useState(false);
 
   // Update progress on field blur
   const handleUsernameBlur = () => {
@@ -278,7 +280,7 @@ function SignUpModal({ onClose, onNext: onComplete }) {
   const bothFilled = username.trim() !== '' && email.trim() !== ''; // Restored to enable Next button
 
   return (
-    <div className={`sign-up-modal-overlay ${step === 1 ? 'step-1' : 'step-2'}`}>
+    <div className={`sign-up-modal-overlay ${step === 1 ? 'step-1' : step === 2 ? 'step-2' : 'step-3'}`}>
       {isLoading && (
         <div className="loading-overlay">
           <div className="spinner" />
@@ -359,38 +361,62 @@ function SignUpModal({ onClose, onNext: onComplete }) {
             </div>
           </>
         )}
-        {step === 3 && (
-          <>
-            <div className="custom-upload-section">
-              <button className="upload-button" onClick={() => document.getElementById('fileInput').click()}>
-                <span role="img" aria-label="camera">📷</span> Upload Your Own Custom Image
-              </button>
-              <input id="fileInput" type="file" accept="image/png,image/jpeg,image/jpg" onChange={handleUpload} style={{ display: 'none' }} />
-            </div>
-            <div className="or-divider"><span>Upload Custom Image</span> OR <span>Create Avatar</span></div>
-            <div className="custom-form-section">
-              <div className="icon-preview">
-                {customIcon && <img src={`data:image/svg+xml;utf8,${encodeURIComponent(createIconSvg(customIcon))}`} alt="Preview" />}
-              </div>
-              <SketchPicker
-                color={customIcon.bgColor}
-                onChange={(color) => setCustomIcon(prev => ({ ...prev, bgColor: color.hex }))}
-              />
-              <SketchPicker
-                color={customIcon.textColor}
-                onChange={(color) => setCustomIcon(prev => ({ ...prev, textColor: color.hex }))}
-              />
-              <input
-                type="text"
-                maxLength="3"
-                placeholder="3 Characters"
-                value={customIcon.text}
-                onChange={(e) => setCustomIcon(prev => ({ ...prev, text: e.target.value.toUpperCase().substring(0, 3) }))}
-                className="modal-input"
-              />
-            </div>
-          </>
-        )}
+{step === 3 && (
+  <>
+    <div className="custom-upload-section">
+<div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+        <button className="upload-button" onClick={() => document.getElementById('fileInput').click()} aria-label="Upload Your Own Custom Image">
+          <span role="img" aria-label="camera">📷</span>
+        </button>
+        <input id="fileInput" type="file" accept="image/png,image/jpeg,image/jpg" onChange={handleUpload} style={{ display: 'none' }} />
+      </div>
+    </div>
+    <div className="or-divider">
+      <span>Upload Custom Image</span> OR <span>Create Avatar</span>
+    </div>
+    <div className="custom-form-section">
+      <div className="icon-preview">
+        <img src={typeof customIcon === 'string' ? customIcon : `data:image/svg+xml;utf8,${encodeURIComponent(createIconSvg(customIcon))}`} alt="Preview" />
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+        <button className="color-button" onClick={() => setShowBgPicker(true)}>Change Background Color</button>
+        <button className="color-button" onClick={() => setShowTextPicker(true)}>Change Text Color</button>
+      </div>
+      <input
+        type="text"
+        maxLength="3"
+        placeholder="3 Characters"
+        value={customIcon.text}
+        onChange={(e) => setCustomIcon(prev => ({ ...prev, text: e.target.value.toUpperCase().substring(0, 3) }))}
+        className="modal-input"
+      />
+    </div>
+    {/* Background Picker Popup */}
+    {showBgPicker && (
+      <div className="color-picker-overlay">
+        <div className="color-picker-content">
+          <SketchPicker
+            color={customIcon.bgColor}
+            onChange={(color) => setCustomIcon(prev => ({ ...prev, bgColor: color.hex }))}
+          />
+          <button className="welcome-button login" onClick={() => setShowBgPicker(false)}>Close</button>
+        </div>
+      </div>
+    )}
+    {/* Text Picker Popup */}
+    {showTextPicker && (
+      <div className="color-picker-overlay">
+        <div className="color-picker-content">
+          <SketchPicker
+            color={customIcon.textColor}
+            onChange={(color) => setCustomIcon(prev => ({ ...prev, textColor: color.hex }))}
+          />
+          <button className="welcome-button login" onClick={() => setShowTextPicker(false)}>Close</button>
+        </div>
+      </div>
+    )}
+  </>
+)}
         {step === 3.1 && cropperSrc && (
           <div className="crop-section">
             <Cropper
