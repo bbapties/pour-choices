@@ -251,11 +251,11 @@ function SignUpModal({ onClose, onNext: onComplete }) {
     image: file,
   }))];
 
-  const customIconConfig = {
-    id: 'custom',
-    image: 'data:image/svg+xml;utf8,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="28" fill="#CCCCCC" opacity="0.5"/><rect x="15" y="15" width="30" height="30" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3"/><text x="30" y="35" font-size="12" text-anchor="middle" fill="#FFFFFF">Custom</text></svg>',
-    label: 'Custom',
-  };
+const customIconConfig = {
+  id: 'custom',
+  image: 'data:image/svg+xml;utf8,<svg width="56" height="56" xmlns="http://www.w3.org/2000/svg"><rect width="56" height="56" fill="%23333333"/><text x="28" y="17" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">MAKE</text><text x="28" y="32" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">YOUR</text><text x="28" y="47" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">OWN</text></svg>',
+  label: 'Custom'
+};
 
   const bothFilled = username.trim() !== '' && email.trim() !== ''; // Restored to enable Next button
 
@@ -269,7 +269,7 @@ function SignUpModal({ onClose, onNext: onComplete }) {
       <div className="sign-up-modal-content">
         <div className="progress-bar">
           <div className="progress-fill" style={{ width: `${progress}%` }}></div>
-          {progress > 0 && <span className="progress-label">{progress}%</span>}
+          {progress > 0 && <span className="progress-label">{progress}% Sign-Up Complete</span>}
         </div>
         {step === 1 && (
           <>
@@ -293,27 +293,33 @@ function SignUpModal({ onClose, onNext: onComplete }) {
         )}
         {step === 2 && (
           <>
-            <h2 style={{ color: '#FFD700', textShadow: '2px 2px 4px #2F2F2F' }}>Select Your Profile Icon</h2>
-            <div className="carousel-container">
-              <div className="current-icon">
-                {selectedIcon && (
-                  <img src={typeof selectedIcon === 'string' ? selectedIcon : `data:image/svg+xml;utf8,${encodeURIComponent(createIconSvg(selectedIcon))}`} alt="Current" />
-                )}
-                <span>current</span>
-              </div>
-              <div className="icon-scroll-container">
-                <div className="carousel-item" onClick={() => handleIconSelect(customIconConfig)}>
-                  <div className="icon-card">
-                    <img src={customIconConfig.image} alt={customIconConfig.label} style={{ objectFit: 'contain' }} />
+             <div className="icon-selection-area">
+              <div className="main-carousel-container">
+                <div className="left-section">
+                  <div className="current-box">
+                    {selectedIcon && (
+                      <img src={typeof selectedIcon === 'string' ? selectedIcon : `data:image/svg+xml;utf8,${encodeURIComponent(createIconSvg(selectedIcon))}`} alt="Current" />
+                    )}
+                  </div>
+                  <span className="current-label">Current</span> {/* Moved label inside .left-section */}
+                </div>
+                <div className="right-section">
+                  <span className="carousel-label">Choose a new Profile Icon below</span> {/* Moved label inside .right-section */}
+                  <div className="icon-scroll-container">
+                    <div className="carousel-item" onClick={() => handleIconSelect(customIconConfig)}>
+                      <div className="icon-card">
+                        <img src={customIconConfig.image} alt={customIconConfig.label} style={{ objectFit: 'contain' }} />
+                      </div>
+                    </div>
+                    {presetIcons.map((icon) => (
+                      <div key={icon.id} className="carousel-item" onClick={() => handleIconSelect(icon)}>
+                        <div className="icon-card">
+                          <img src={icon.image} alt={icon.label} style={{ objectFit: 'contain' }} />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                {presetIcons.map((icon) => (
-                  <div key={icon.id} className="carousel-item" onClick={() => handleIconSelect(icon)}>
-                    <div className="icon-card">
-                      <img src={icon.image} alt={icon.label} style={{ objectFit: 'contain' }} />
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
             <input
@@ -323,6 +329,7 @@ function SignUpModal({ onClose, onNext: onComplete }) {
               onChange={handlePhoneChange}
               onBlur={() => setProgress(phone ? 100 : 75)}
               className="modal-input"
+              style={{marginTop: '10px'}} /* Add some top margin for spacing */
             />
             <small style={{ color: '#CCCCCC', fontSize: '0.8rem' }}>Phone number will be used to send text updates</small>
           </>

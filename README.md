@@ -68,3 +68,77 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+```
+pour-choices
+├─ .env
+├─ .kombai
+│  └─ rules
+├─ .ngrok.exe.old
+├─ backend
+│  ├─ api
+│  │  ├─ .env
+│  │  ├─ package-lock.json
+│  │  ├─ package.json
+│  │  ├─ server.js
+│  │  └─ yarn.lock
+│  └─ api.js
+├─ package-lock.json
+├─ package.json
+├─ public
+│  ├─ cork-pop.mp3
+│  ├─ index.html
+│  ├─ manifest.json
+│  ├─ robots.txt
+│  ├─ service-worker.js
+│  ├─ shortcut-icon-192.png
+│  ├─ shortcut-icon-512.png
+│  ├─ shortcut-icon-full.png
+│  ├─ user-icons
+│  │  ├─ icon1.png
+│  │  ├─ icon10.png
+│  │  ├─ icon11.png
+│  │  ├─ icon12.png
+│  │  ├─ icon2.png
+│  │  ├─ icon3.png
+│  │  ├─ icon4.png
+│  │  ├─ icon5.png
+│  │  ├─ icon6.png
+│  │  ├─ icon7.png
+│  │  ├─ icon8.png
+│  │  └─ icon9.png
+│  └─ user-pic.png
+├─ README.md
+├─ removed-assets
+├─ src
+│  ├─ App.css
+│  ├─ App.js
+│  ├─ App.test.js
+│  ├─ components
+│  │  ├─ fonts
+│  │  │  ├─ slick.eot
+│  │  │  ├─ slick.svg
+│  │  │  ├─ slick.ttf
+│  │  │  └─ slick.woff
+│  │  ├─ SignUpModal.css
+│  │  ├─ SignUpModal.js
+│  │  ├─ slick-theme.css
+│  │  ├─ slick.css
+│  │  ├─ Welcome.css
+│  │  └─ Welcome.js
+│  ├─ images
+│  │  ├─ cellar-bg.png
+│  │  ├─ coming-soon.jpg
+│  │  ├─ dark-oak.jpg
+│  │  ├─ mahogany-texture.jpg
+│  │  ├─ White-Oak.jpg
+│  │  └─ wood-grain.jpg
+│  ├─ index.css
+│  ├─ index.js
+│  ├─ logo.svg
+│  ├─ reportWebVitals.js
+│  ├─ serviceWorkerRegistration.js
+│  └─ setupTests.js
+└─ yarn.lock
+
+```
