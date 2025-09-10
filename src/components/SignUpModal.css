@@ -238,14 +238,14 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #FFFFFF;
+  background-color: transparent; /* Changed from #FFFFFF */
   border: 2px solid #DAA520;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0; /* Prevent shrinking */
+  flex-shrink: 0;
 }
 
 .carousel-item img {

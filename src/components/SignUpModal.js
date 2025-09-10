@@ -187,12 +187,13 @@ function SignUpModal({ onClose, onNext: onComplete }) {
     }
   };
 
-  const handleIconSelect = (icon) => {
-    trackEvent('click', '/signup', `select-icon-${icon.id || 'custom'}`);
-    setSelectedIcon(icon);
-    setProgress(75); // Icon selected
-    if (icon.id === 'custom') setStep(3);
-  };
+const handleIconSelect = (icon) => {
+  if (icon.id === 'custom') {
+    setStep(3); // Go to custom step
+  } else {
+    setSelectedIcon(icon.image || icon); // Update for other icons
+  }
+};
 
   const handlePhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, '').substring(0, 10);
