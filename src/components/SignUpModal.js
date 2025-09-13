@@ -1,22 +1,17 @@
 // SignUpModal.js: The sign-up modal component with multi-step profile setup
 import React, { useState, useEffect, useRef } from 'react';
 import './SignUpModal.css'; // Import modal-specific styles
-import { SketchPicker } from 'react-color';
-import Cropper from 'react-cropper';
-import 'cropperjs/dist/cropper.css'; // Correct style import
 
 function SignUpModal({ onClose, onNext: onComplete }) {
-  const [step, setStep] = useState(1); // 1: Username/Email, 2: Profile/Phone, 3: Custom, 3.1: Upload Crop
+  const [step, setStep] = useState(1); // 1: Username/Email, 2: Profile/Phone, 3: Custom
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-const [phone, setPhone] = useState('');
-const [selectedIcon, setSelectedIcon] = useState(null); // Move this before customIcon
-const [customIcon, setCustomIcon] = useState({ bgColor: '#000000', textColor: '#FFFFFF', text: '' });
-const [showConfirm, setShowConfirm] = useState(false);
-  const [cropperSrc, setCropperSrc] = useState(null); // Upload crop image src
-  const cropperRef = useRef(null);
+  const [phone, setPhone] = useState('');
+  const [selectedIcon, setSelectedIcon] = useState(null); // Move this before customIcon
+  const [customIcon, setCustomIcon] = useState({ bgColor: '#000000', textColor: '#FFFFFF', text: '' });
+  const [showConfirm, setShowConfirm] = useState(false);
   const audioRef = useRef(new Audio(`${process.env.PUBLIC_URL}/cork-pop.mp3`));
   const [showBgPicker, setShowBgPicker] = useState(false);
   const [showTextPicker, setShowTextPicker] = useState(false);
@@ -113,38 +108,8 @@ const [showConfirm, setShowConfirm] = useState(false);
         })
         .catch(() => setIsLoading(false))
         .finally(() => setIsLoading(false));
-    } else if (step === 2 && phone && !/^\(\d{3}\)\s\d{3}-\d{4}$/.test(phone)) {
-      alert('Invalid US phone number');
-    } else if (step === 3.1) {
-      const cropper = cropperRef.current?.cropper;
-      if (cropper) {
-        const canvas = cropper.getCroppedCanvas({ width: 100, height: 100 });
-        canvas.toBlob(async (blob) => {
-          const formData = new FormData();
-          formData.append('profileImage', blob, 'cropped-image.png');
-          formData.append('userId', 33); // Placeholder
-          try {
-            const response = await fetch('https://pour-choices-api.onrender.com/upload-profile', {
-              method: 'POST',
-              body: formData,
-            });
-            const data = await response.json();
-            if (response.ok) {
-              setSelectedIcon(data.imageUrl);
-              setStep(2);
-              setProgress(75);
-            } else {
-              throw new Error(data.error || 'Upload failed');
-            }
-          } catch (error) {
-            alert(`Upload failed: ${error.message}`);
-          } finally {
-            setIsLoading(false);
-            setCropperSrc(null);
-          }
-        });
-      }
     }
+    setIsLoading(false);
   };
 
   const handleCancel = () => {
@@ -240,13 +205,15 @@ const [showConfirm, setShowConfirm] = useState(false);
       alert('File is too large, please select a smaller image');
       return;
     }
-    setCropperSrc(URL.createObjectURL(file));
-    setStep(3.1); // Move to crop step
-  };
-
-  const handleCropOk = () => {
-    setIsLoading(true);
-    handleNextStep();
+    
+    // Simple file upload without cropping - just use the file as-is
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setSelectedIcon(event.target.result);
+      setStep(2);
+      setProgress(75);
+    };
+    reader.readAsDataURL(file);
   };
 
   // Dynamically list icons from public/user-icons (manual array for now)
@@ -361,85 +328,119 @@ const [showConfirm, setShowConfirm] = useState(false);
             </div>
           </>
         )}
-{step === 3 && (
-  <>
-    <div className="custom-upload-section">
-<div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-        <button className="upload-button" onClick={() => document.getElementById('fileInput').click()} aria-label="Upload Your Own Custom Image">
-          <span role="img" aria-label="camera">📷</span>
-        </button>
-        <input id="fileInput" type="file" accept="image/png,image/jpeg,image/jpg" onChange={handleUpload} style={{ display: 'none' }} />
-      </div>
-    </div>
-    <div className="or-divider">
-      <span>Upload Custom Image</span> OR <span>Create Avatar</span>
-    </div>
-    <div className="custom-form-section">
-      <div className="icon-preview">
-        <img src={typeof customIcon === 'string' ? customIcon : `data:image/svg+xml;utf8,${encodeURIComponent(createIconSvg(customIcon))}`} alt="Preview" />
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-        <button className="color-button" onClick={() => setShowBgPicker(true)}>Change Background Color</button>
-        <button className="color-button" onClick={() => setShowTextPicker(true)}>Change Text Color</button>
-      </div>
-      <input
-        type="text"
-        maxLength="3"
-        placeholder="3 Characters"
-        value={customIcon.text}
-        onChange={(e) => setCustomIcon(prev => ({ ...prev, text: e.target.value.toUpperCase().substring(0, 3) }))}
-        className="modal-input"
-      />
-    </div>
-    {/* Background Picker Popup */}
-    {showBgPicker && (
-      <div className="color-picker-overlay">
-        <div className="color-picker-content">
-          <SketchPicker
-            color={customIcon.bgColor}
-            onChange={(color) => setCustomIcon(prev => ({ ...prev, bgColor: color.hex }))}
-          />
-          <button className="welcome-button login" onClick={() => setShowBgPicker(false)}>Close</button>
-        </div>
-      </div>
-    )}
-    {/* Text Picker Popup */}
-    {showTextPicker && (
-      <div className="color-picker-overlay">
-        <div className="color-picker-content">
-          <SketchPicker
-            color={customIcon.textColor}
-            onChange={(color) => setCustomIcon(prev => ({ ...prev, textColor: color.hex }))}
-          />
-          <button className="welcome-button login" onClick={() => setShowTextPicker(false)}>Close</button>
-        </div>
-      </div>
-    )}
-  </>
-)}
-        {step === 3.1 && cropperSrc && (
-          <div className="crop-section">
-            <Cropper
-              ref={cropperRef}
-              src={cropperSrc}
-              style={{ height: 200, width: '100%' }}
-              aspectRatio={1}
-              guides={true}
-              cropBoxResizable={false}
-              viewMode={1}
-              background={false}
-              autoCropArea={1}
-              checkOrientation={false}
-              className="cropper"
-            />
-            <button className="welcome-button signup" onClick={handleCropOk}>OK</button>
-            <button className="welcome-button login" onClick={() => { setCropperSrc(null); setStep(3); }}>Cancel</button>
-          </div>
+
+        {step === 3 && (
+          <>
+            {/* Current Icon - Centered at top */}
+            <div className="step3-current-icon">
+              <div className="current-box">
+                {selectedIcon && (
+                  <img src={typeof selectedIcon === 'string' ? selectedIcon : `data:image/svg+xml;utf8,${encodeURIComponent(createIconSvg(selectedIcon))}`} alt="Current" />
+                )}
+              </div>
+              <span className="current-label">Current Icon</span>
+            </div>
+
+            {/* Two-column grid layout */}
+            <div className="step3-grid-container">
+              {/* Left Column - Upload Section */}
+              <div className="step3-upload-section">
+                <span className="step3-section-title step3-title-top">Upload Your</span>
+                <div className="upload-button-container">
+                  <button 
+                    className="upload-button-large" 
+                    onClick={() => document.getElementById('fileInput').click()} 
+                    aria-label="Upload Your Own Custom Image"
+                  >
+                    <span className="camera-icon" role="img" aria-label="camera" style={{ paddingBottom: '35px' }}>📷</span>
+                  </button>
+                  <input 
+                    id="fileInput" 
+                    type="file" 
+                    accept="image/png,image/jpeg,image/jpg" 
+                    onChange={handleUpload} 
+                    style={{ display: 'none' }} 
+                  />
+                </div>
+                <span className="step3-section-title step3-title-bottom">Custom Image</span>
+              </div>
+
+              {/* OR Divider */}
+              <div className="step3-or-divider">
+                <span>OR</span>
+              </div>
+
+              {/* Right Column - Create Avatar Section */}
+              <div className="step3-create-section">
+                <span className="step3-section-title step3-title-top">Create Your Own</span>
+                <div className="create-controls">
+                  <button 
+                    className="step3-color-button" 
+                    onClick={() => setShowBgPicker(true)}
+                  >
+                    Background Color
+                  </button>
+                  <button 
+                    className="step3-color-button" 
+                    onClick={() => setShowTextPicker(true)}
+                  >
+                    Text Color
+                  </button>
+                  <div className="text-input-container">
+                    <label className="text-input-label">TEXT:</label>
+                    <input
+                      type="text"
+                      maxLength="3"
+                      placeholder="ABC"
+                      value={customIcon.text}
+                      onChange={(e) => setCustomIcon(prev => ({ ...prev, text: e.target.value.toUpperCase().substring(0, 3) }))}
+                      className="step3-text-input"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Background Picker Popup - Using native HTML color picker */}
+            {showBgPicker && (
+              <div className="color-picker-overlay">
+                <div className="color-picker-content">
+                  <h3>Choose Background Color</h3>
+                  <input
+                    type="color"
+                    value={customIcon.bgColor}
+                    onChange={(e) => setCustomIcon(prev => ({ ...prev, bgColor: e.target.value }))}
+                    style={{ width: '100px', height: '50px', margin: '20px 0' }}
+                  />
+                  <br />
+                  <button className="welcome-button login" onClick={() => setShowBgPicker(false)}>Close</button>
+                </div>
+              </div>
+            )}
+
+            {/* Text Picker Popup - Using native HTML color picker */}
+            {showTextPicker && (
+              <div className="color-picker-overlay">
+                <div className="color-picker-content">
+                  <h3>Choose Text Color</h3>
+                  <input
+                    type="color"
+                    value={customIcon.textColor}
+                    onChange={(e) => setCustomIcon(prev => ({ ...prev, textColor: e.target.value }))}
+                    style={{ width: '100px', height: '50px', margin: '20px 0' }}
+                  />
+                  <br />
+                  <button className="welcome-button login" onClick={() => setShowTextPicker(false)}>Close</button>
+                </div>
+              </div>
+            )}
+          </>
         )}
+
         {showConfirm && (
           <div className="confirm-overlay">
             <div className="confirm-content">
-              <p>Are you sure you don’t want to receive text message updates?</p>
+              <p>Are you sure you don't want to receive text message updates?</p>
               <div className="confirm-buttons">
                 <button onClick={() => handleConfirm(true)}>Yes</button>
                 <button onClick={() => handleConfirm(false)}>Back</button>
