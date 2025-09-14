@@ -120,6 +120,17 @@ function SignUpModal({ onClose, onNext: onComplete }) {
     onClose();
   };
 
+  const handleBack = () => {
+    trackEvent('click', '/signup', 'back-button');
+    if (step === 2) {
+      setStep(1);
+      setProgress(50); // Keep the username/email progress when going back
+    } else if (step === 3) {
+      setStep(2);
+      setProgress(75); // Keep the icon progress when going back from step 3
+    }
+  };
+
   const handleSubmit = () => {
     trackEvent('click', '/signup', 'submit-button');
     if (phone && !/^\(\d{3}\)\s\d{3}-\d{4}$/.test(phone)) {
@@ -171,13 +182,15 @@ function SignUpModal({ onClose, onNext: onComplete }) {
     }
   };
 
-  const handleIconSelect = (icon) => {
-    if (icon.id === 'custom') {
-      setStep(3); // Go to custom step
-    } else {
-      setSelectedIcon(icon.image || icon); // Update for other icons
-    }
-  };
+const handleIconSelect = (icon) => {
+  if (icon.id === 'custom') {
+    setStep(3); // Go to custom step
+  } else {
+    setSelectedIcon(icon.image || icon); // Update for other icons
+    // Progress logic: if on step 2 and progress is 50, set to 75
+    setProgress(prev => (prev < 75 ? 75 : prev));
+  }
+};
 
   const handlePhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, '').substring(0, 10);
@@ -205,6 +218,10 @@ function SignUpModal({ onClose, onNext: onComplete }) {
       alert('File is too large, please select a smaller image');
       return;
     }
+
+    const handleBackToStep1 = () => {
+  setStep(1);
+};
     
     // Simple file upload without cropping - just use the file as-is
     const reader = new FileReader();
@@ -352,7 +369,7 @@ function SignUpModal({ onClose, onNext: onComplete }) {
                     onClick={() => document.getElementById('fileInput').click()} 
                     aria-label="Upload Your Own Custom Image"
                   >
-                    <span className="camera-icon" role="img" aria-label="camera" style={{ paddingBottom: '35px' }}>📷</span>
+                    <span className="camera-icon" role="img" aria-label="camera" style={{ paddingBottom: '40px' }}>📷</span>
                   </button>
                   <input 
                     id="fileInput" 
@@ -453,7 +470,10 @@ function SignUpModal({ onClose, onNext: onComplete }) {
           {step === 2 && (!phone || !/^\(\d{3}\)\s\d{3}-\d{4}$/.test(phone)) && <button className="welcome-button signup" onClick={handleNextStep}>Skip</button>}
           {step === 2 && phone && /^\(\d{3}\)\s\d{3}-\d{4}$/.test(phone) && <button className="welcome-button signup" onClick={handleSubmit}>Submit</button>}
           {step === 3 && customIcon.text && customIcon.text.length === 3 && <button className="welcome-button signup" onClick={handleCustomSubmit}>OK</button>}
-          <button className="welcome-button login" onClick={handleCancel}>Cancel</button>
+          
+          {/* Conditional button rendering: Cancel for step 1, Back for steps 2 and 3 */}
+          {step === 1 && <button className="welcome-button login" onClick={handleCancel}>Cancel</button>}
+          {(step === 2 || step === 3) && <button className="welcome-button login" onClick={handleBack}>Back</button>}
         </div>
       </div>
     </div>

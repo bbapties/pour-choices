@@ -189,8 +189,9 @@
 .current-box img {
   width: 100%; /* Fill the box */
   height: 100%; /* Fill the box */
-  object-fit: contain; /* Maintain aspect ratio */
-  border-radius: 3px; /* Slightly smaller radius for the image itself */
+  border-radius: 50%; /* Make image circular */
+  border: 2px solid #DAA520; /* Match .current-box border */
+  box-sizing: border-box; /* Ensure border is included in size */
 }
 
 .icon-scroll-container {
